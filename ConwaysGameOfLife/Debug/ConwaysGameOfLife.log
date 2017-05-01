@@ -1,0 +1,5 @@
+﻿  ConwaysGameOfLife.cpp
+c:\users\nik\documents\visual studio 2017\projects\conwaysgameoflife\conwaysgameoflife\conwaysgameoflife.cpp(58): warning C4018: '<': signed/unsigned mismatch
+c:\users\nik\documents\visual studio 2017\projects\conwaysgameoflife\conwaysgameoflife\conwaysgameoflife.cpp(61): warning C4018: '<': signed/unsigned mismatch
+  ConwaysGameOfLife.vcxproj -> C:\Users\Nik\Documents\Visual Studio 2017\Projects\ConwaysGameOfLife\Debug\ConwaysGameOfLife.exe
+  ConwaysGameOfLife.vcxproj -> C:\Users\Nik\Documents\Visual Studio 2017\Projects\ConwaysGameOfLife\Debug\ConwaysGameOfLife.pdb (Partial PDB)
