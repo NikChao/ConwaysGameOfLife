@@ -21,23 +21,23 @@ public:
 
 private:
 	bool** grid;
-	int x;
-	int y;
+	int width;
+	int height;
 };
 
 #pragma region Game Methods
 Game::Game()
 {
-	x = 20;
-	y = 20;
-	grid = (bool **)malloc(y * sizeof(bool *));
-	for (int i = 0; i < y; i++)
+	width = 20;
+	height = 20;
+	grid = (bool **)malloc(height * sizeof(bool *));
+	for (int i = 0; i < height; i++)
 	{
-		grid[i] = (bool *)malloc(x * sizeof(bool));
+		grid[i] = (bool *)malloc(width * sizeof(bool));
 	}
-	for (int i = 0; i < y; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < x; j++)
+		for (int j = 0; j < width; j++)
 		{
 			grid[i][j] = false;
 		}
@@ -74,39 +74,39 @@ Game::Game()
 	}
 }
 
-bool Game::UpdateCell(int xpos, int ypos)
+bool Game::UpdateCell(int x, int y)
 {
-	int maxx = x - 1;
-	int maxy = y - 1;
+	int maxx = width - 1;
+	int maxy = height - 1;
 	int surroundingAlive = 0;
 
-	if (xpos > 0 && ypos > 0) {
-		if (grid[ypos - 1][xpos - 1])
+	if (x > 0 && y > 0) {
+		if (grid[y - 1][x - 1])
 			surroundingAlive++;
-		if (grid[ypos][xpos - 1])
-			surroundingAlive++;
-	}
-	if (xpos > 0 && ypos < maxy) {
-		if (grid[ypos + 1][xpos - 1])
-			surroundingAlive++;
-		if (grid[ypos + 1][xpos])
+		if (grid[y][x - 1])
 			surroundingAlive++;
 	}
-	if (xpos < maxx && ypos > 0) {
-		if (grid[ypos - 1][xpos + 1])
+	if (x > 0 && y < maxy) {
+		if (grid[y + 1][x - 1])
 			surroundingAlive++;
-		if (grid[ypos - 1][xpos])
-			surroundingAlive++;
-		if (grid[ypos][xpos + 1])
+		if (grid[y + 1][x])
 			surroundingAlive++;
 	}
-	if (xpos < maxx && ypos < maxy) {
-		if (grid[ypos + 1][xpos + 1])
+	if (x < maxx && y > 0) {
+		if (grid[y - 1][x + 1])
+			surroundingAlive++;
+		if (grid[y - 1][x])
+			surroundingAlive++;
+		if (grid[y][x + 1])
+			surroundingAlive++;
+	}
+	if (x < maxx && y < maxy) {
+		if (grid[y + 1][x + 1])
 			surroundingAlive++;
 	}
 
 	/* Returns */
-	if (grid[ypos][xpos] && (surroundingAlive == 2 || surroundingAlive == 3))
+	if (grid[y][x] && (surroundingAlive == 2 || surroundingAlive == 3))
 	{
 		return true;
 	}
@@ -114,7 +114,7 @@ bool Game::UpdateCell(int xpos, int ypos)
 	{
 		return false;
 	}
-	if (!grid[ypos][xpos] && surroundingAlive == 3)
+	if (!grid[y][x] && surroundingAlive == 3)
 	{
 		return true;
 	}
@@ -125,14 +125,14 @@ bool Game::UpdateCell(int xpos, int ypos)
 
 void Game::Update()
 {
-	bool** newBoard = (bool **)malloc(y * sizeof(bool *));
-	for (int i = 0; i < y; i++)
+	bool** newBoard = (bool **)malloc(height * sizeof(bool *));
+	for (int i = 0; i < height; i++)
 	{
-		newBoard[i] = (bool *)malloc(x * sizeof(bool));
+		newBoard[i] = (bool *)malloc(width * sizeof(bool));
 	}
-	for (int i = 0; i < x; i++)
+	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < x; j++)
+		for (int j = 0; j < width; j++)
 		{
 			newBoard[j][i] = UpdateCell(i, j);
 		}
@@ -143,11 +143,11 @@ void Game::Update()
 void Game::DrawGrid(bool** grid)
 {
 	system("cls");
-	for (int i = 0; i < y; i++)
+	for (int i = 0; i < height; i++)
 	{
 		bool* row = grid[i];
 		string rowDisplay = "";
-		for (int j = 0; j < x; j++)
+		for (int j = 0; j < width; j++)
 		{
 			if (grid[i][j])
 			{
