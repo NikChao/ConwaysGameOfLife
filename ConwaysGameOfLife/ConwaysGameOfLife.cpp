@@ -8,11 +8,12 @@
 #include <sstream>
 
 using namespace std;
-
+// TODO replace jagged array with flattened array and use logic for checks :)
 class Game
 {
 public:
 	Game();
+	~Game();
 	bool UpdateCell(int x, int y);
 	void Update();
 	bool** GetGrid();
@@ -72,6 +73,11 @@ Game::Game()
 			array.push_back(temp);
 		grid[array[1]][array[0]] = true;
 	}
+}
+
+Game::~Game()
+{
+	free(grid);
 }
 
 bool Game::UpdateCell(int x, int y)
@@ -183,10 +189,7 @@ void Game::GameLoop()
 int main()
 {
 	Game g = Game();
-	getchar();
 	g.GameLoop(); // Runs Game
-
 
     return 0;
 }
-
