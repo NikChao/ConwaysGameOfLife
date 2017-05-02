@@ -80,204 +80,29 @@ bool Game::UpdateCell(int xpos, int ypos)
 	int maxy = y - 1;
 	int surroundingAlive = 0;
 
-	/* Center of Board */
-	if (xpos > 0 && ypos > 0 && xpos < maxx && ypos < maxy)
-	{
-		if (grid[ypos - 1][xpos - 1] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos - 1][xpos] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos - 1][xpos + 1] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos][xpos - 1] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos][xpos + 1] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos + 1][xpos - 1] == true )
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos + 1][xpos] == true)
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos + 1][xpos + 1] == true)
-		{
-			surroundingAlive++;
-		}
-	}
-	
-	/* Edge Cases */
-	if (ypos == 0)
-	{
-		if (xpos == 0)
-		{
-			if (grid[ypos][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-		}
-		else if (x == maxx)
-		{
-			if (grid[ypos][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-		}
-		else {
-			if (grid[ypos][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos + 1][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-		}
-	}
-
-	if (ypos == maxy)
-	{
-		if (xpos == 0)
-		{
-			if (grid[ypos - 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos - 1][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-		}
-		else if (xpos == maxx)
-		{
-			if (grid[ypos - 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos - 1][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-
-		}
-		else
-		{
-			if (grid[ypos - 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos - 1][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos - 1][xpos])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos][xpos - 1])
-			{
-				surroundingAlive++;
-			}
-			if (grid[ypos][xpos + 1])
-			{
-				surroundingAlive++;
-			}
-		}
-	}
-
-	if (xpos == 0 && ypos < maxy && ypos > 0)
-	{
-		if (grid[ypos - 1][xpos])
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos + 1][xpos])
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos - 1][xpos])
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos][xpos + 1])
-		{
-			surroundingAlive++;
-		}
-		if (grid[ypos + 1][xpos])
-		{
-			surroundingAlive++;
-		}
-	}
-
-	if (xpos == maxx && ypos < maxy && ypos > 0)
-	{
-		if (grid[ypos - 1][xpos])
-		{
-			surroundingAlive++;
-		}
+	if (xpos > 0 && ypos > 0) {
 		if (grid[ypos - 1][xpos - 1])
-		{
 			surroundingAlive++;
-		}
 		if (grid[ypos][xpos - 1])
-		{
 			surroundingAlive++;
-		}
+	}
+	if (xpos > 0 && ypos < maxy) {
 		if (grid[ypos + 1][xpos - 1])
-		{
 			surroundingAlive++;
-		}
 		if (grid[ypos + 1][xpos])
-		{
 			surroundingAlive++;
-		}
+	}
+	if (xpos < maxx && ypos > 0) {
+		if (grid[ypos - 1][xpos + 1])
+			surroundingAlive++;
+		if (grid[ypos - 1][xpos])
+			surroundingAlive++;
+		if (grid[ypos][xpos + 1])
+			surroundingAlive++;
+	}
+	if (xpos < maxx && ypos < maxy) {
+		if (grid[ypos + 1][xpos + 1])
+			surroundingAlive++;
 	}
 
 	/* Returns */
