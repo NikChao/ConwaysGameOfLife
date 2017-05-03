@@ -139,8 +139,6 @@ void Game::GameLoop()
 {
 	DrawGrid(grid);
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	cout << ceil(float(7) / float(4));
-	getchar();
 	while (true)
 	{
 		Update();
