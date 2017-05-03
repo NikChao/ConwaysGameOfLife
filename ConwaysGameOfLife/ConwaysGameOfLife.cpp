@@ -14,14 +14,14 @@ class Game
 public:
 	Game();
 	~Game();
-	bool UpdateCell(int x, int y);
+	bool UpdateCell(int i);
 	void Update();
-	bool** GetGrid();
-	void DrawGrid(bool** grid);
+	bool* GetGrid();
+	void DrawGrid(bool* grid);
 	void GameLoop();
 
 private:
-	bool** grid;
+	bool* grid;
 	int width;
 	int height;
 };
@@ -31,18 +31,10 @@ Game::Game()
 {
 	width = 20;
 	height = 20;
-	grid = (bool **)malloc(height * sizeof(bool *));
-	for (int i = 0; i < height; i++)
-	{
-		grid[i] = (bool *)malloc(width * sizeof(bool));
-	}
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			grid[i][j] = false;
-		}
-	}
+	grid = (bool *)malloc(height * width * sizeof(bool));
+
+	for (int i = 0; i < height * width; i++)
+		grid[i] = false;
 
 	fprintf(stdout, "Input your initial living cells in the format `x1,y1 x2,y2 x3,ye ...`\n");
 	string input = "";
@@ -71,104 +63,74 @@ Game::Game()
 		int temp;
 		while (s >> temp)
 			array.push_back(temp);
-		grid[array[1]][array[0]] = true;
+		grid[array[1] * width + array[0]] = true;
 	}
 }
 
 Game::~Game()
 {
+	grid = nullptr;
 	free(grid);
 }
 
-bool Game::UpdateCell(int x, int y)
+bool Game::UpdateCell(int i)
 {
-	int maxx = width - 1;
-	int maxy = height - 1;
 	int surroundingAlive = 0;
 
-	if (x > 0 && y > 0) {
-		if (grid[y - 1][x - 1])
-			surroundingAlive++;
-		if (grid[y][x - 1])
-			surroundingAlive++;
-	}
-	if (x > 0 && y < maxy) {
-		if (grid[y + 1][x - 1])
-			surroundingAlive++;
-		if (grid[y + 1][x])
-			surroundingAlive++;
-	}
-	if (x < maxx && y > 0) {
-		if (grid[y - 1][x + 1])
-			surroundingAlive++;
-		if (grid[y - 1][x])
-			surroundingAlive++;
-		if (grid[y][x + 1])
-			surroundingAlive++;
-	}
-	if (x < maxx && y < maxy) {
-		if (grid[y + 1][x + 1])
-			surroundingAlive++;
-	}
+	// Top left
+	if (i % width > 0 && i > width && grid[i - width - 1]) surroundingAlive++;
+	// Top mid
+	if (i > width && grid[i - width]) surroundingAlive++;
+	// Top right
+	if (i > width && i % width < width - 1 && grid[i - width + 1]) surroundingAlive++;
+	// left
+	if (i % width > 0 && grid[i - 1]) surroundingAlive++;
+	// right
+	if (i % width < width - 1 && grid[i + 1]) surroundingAlive++;
+	// bot left
+	if (i % width > 0 && i <= width * (height - 1) && grid[i + width - 1]) surroundingAlive++;
+	// bot mid
+	if (i <= width * (height - 1) && grid[i + width]) surroundingAlive++;
+	// bot right
+	if (i % width < width - 1 && i <= width * (height - 1) && grid[i + width + 1]) surroundingAlive++;
 
-	/* Returns */
-	if (grid[y][x] && (surroundingAlive == 2 || surroundingAlive == 3))
-	{
-		return true;
-	}
-	if (surroundingAlive > 3 || surroundingAlive < 2)
-	{
-		return false;
-	}
-	if (!grid[y][x] && surroundingAlive == 3)
-	{
-		return true;
-	}
-	return false;
-	/* End */
-
+	if (surroundingAlive == 3) return true;
+	if (grid[i] && surroundingAlive == 2) return true;
+	if (surroundingAlive > 3 || surroundingAlive < 2) return false;
 }
 
 void Game::Update()
 {
-	bool** newBoard = (bool **)malloc(height * sizeof(bool *));
-	for (int i = 0; i < height; i++)
+	bool* newBoard = (bool *)malloc(height * width * sizeof(bool));
+	for (int i = 0; i < height * width; i++)
 	{
-		newBoard[i] = (bool *)malloc(width * sizeof(bool));
-	}
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			newBoard[j][i] = UpdateCell(i, j);
-		}
+		newBoard[i] = UpdateCell(i);
 	}
 	grid = newBoard;
+	
+	newBoard = nullptr;
+	free(newBoard);
 }
 
-void Game::DrawGrid(bool** grid)
+void Game::DrawGrid(bool* grid)
 {
 	system("cls");
 	for (int i = 0; i < height; i++)
 	{
-		bool* row = grid[i];
-		string rowDisplay = "";
-		for (int j = 0; j < width; j++)
+		string row = "";
+		for (int j = i * height; j < i * height + width; j++)
 		{
-			if (grid[i][j])
-			{
-				rowDisplay += "1 ";
-			}
+			if (grid[j])
+				row += "1 ";
 			else
-			{
-				rowDisplay += "0 ";
-			}
+				row += "0 ";
 		}
-		cout << rowDisplay << '\n';
+		row += "\n";
+		cout << row;
 	}
 }
 
-bool** Game::GetGrid()
+bool* Game::GetGrid()
 { 
 	return grid;
 }
@@ -177,6 +139,8 @@ void Game::GameLoop()
 {
 	DrawGrid(grid);
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	cout << ceil(float(7) / float(4));
+	getchar();
 	while (true)
 	{
 		Update();
