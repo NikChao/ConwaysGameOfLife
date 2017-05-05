@@ -13,7 +13,8 @@ class Game {
 public:
 	Game();
 	~Game();
-	bool UpdateCell(int i);
+	bool Cell(int x, int y);
+	bool UpdateCell(int x, int y);
 	void Update();
 	bool *GetGrid();
 	void DrawGrid(bool *grid);
@@ -67,48 +68,55 @@ Game::~Game() {
 	free(grid);
 }
 
-bool Game::UpdateCell(int i) {
+bool Game::Cell(int x, int y) {
+	return x >= 0 && x < width && y >= 0 && y < height && grid[y * width + x];
+}
+
+bool Game::UpdateCell(int x, int y) {
 	int surroundingAlive = 0;
 
 	// Top left
-	if (i % width > 0 && i > width && grid[i - width - 1])
+	if (Cell(x - 1, y - 1))
 		surroundingAlive++;
 
 	// Top mid
-	if (i > width && grid[i - width])
+	if (Cell(x, y - 1))
 		surroundingAlive++;
 
 	// Top right
-	if (i > width && i % width < width - 1 && grid[i - width + 1])
+	if (Cell(x + 1, y - 1))
 		surroundingAlive++;
 
 	// left
-	if (i % width > 0 && grid[i - 1])
+	if (Cell(x - 1, y))
 		surroundingAlive++;
 
 	// right
-	if (i % width < width - 1 && grid[i + 1])
+	if (Cell(x + 1, y))
 		surroundingAlive++;
 
 	// bot left
-	if (i % width > 0 && i <= width * (height - 1) && grid[i + width - 1])
+	if (Cell(x - 1, y + 1))
 		surroundingAlive++;
 
 	// bot mid
-	if (i <= width * (height - 1) && grid[i + width])
+	if (Cell(x, y + 1))
 		surroundingAlive++;
 
 	// bot right
-	if (i % width < width - 1 && i <= width * (height - 1) && grid[i + width + 1])
+	if (Cell(x + 1, y + 1))
 		surroundingAlive++;
 	
-	return surroundingAlive == 3 || (grid[i] && surroundingAlive == 2);
+	return surroundingAlive == 3 || (Cell(x, y) && surroundingAlive == 2);
 }
 
 void Game::Update() {
 	bool *newBoard = (bool *)malloc(height * width * sizeof(bool));
 	for (int i = 0; i < height * width; i++) {
-		newBoard[i] = UpdateCell(i);
+		int x = i % width;
+		int y = ceil(i / height);
+
+		newBoard[i] = UpdateCell(x, y);
 	}
 	grid = newBoard;
 	
