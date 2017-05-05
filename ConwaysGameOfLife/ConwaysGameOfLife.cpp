@@ -35,7 +35,7 @@ Game::Game() {
 	for (int i = 0; i < height * width; i++)
 		grid[i] = false;
 
-	fprintf(stdout, "Input your initial living cells in the format `x1,y1 x2,y2 x3,ye ...`\n");
+	cout << "Input your initial living cells in the format `x1,y1 x2,y2 x3,ye ...`\n";
 	string input = "";
 	getline(cin, input);
 
