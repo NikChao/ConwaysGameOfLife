@@ -16,12 +16,12 @@ public:
 	~Game();
 	bool UpdateCell(int i);
 	void Update();
-	bool* GetGrid();
-	void DrawGrid(bool* grid);
+	bool *GetGrid();
+	void DrawGrid(bool *grid);
 	void GameLoop();
 
 private:
-	bool* grid;
+	bool *grid;
 	int width;
 	int height;
 };
@@ -101,7 +101,7 @@ bool Game::UpdateCell(int i)
 
 void Game::Update()
 {
-	bool* newBoard = (bool *)malloc(height * width * sizeof(bool));
+	bool *newBoard = (bool *)malloc(height * width * sizeof(bool));
 	for (int i = 0; i < height * width; i++)
 	{
 		newBoard[i] = UpdateCell(i);
@@ -112,7 +112,7 @@ void Game::Update()
 	free(newBoard);
 }
 
-void Game::DrawGrid(bool* grid)
+void Game::DrawGrid(bool *grid)
 {
 	system("cls");
 	for (int i = 0; i < height; i++)
@@ -130,7 +130,7 @@ void Game::DrawGrid(bool* grid)
 	}
 }
 
-bool* Game::GetGrid()
+bool *Game::GetGrid()
 { 
 	return grid;
 }
