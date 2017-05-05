@@ -2,13 +2,10 @@
 //
 #include "stdafx.h"
 #include <iostream>
-#include <string>
 #include <thread>
 #include <vector>
 #include <sstream>
 
-using namespace std;
-// TODO replace jagged array with flattened array and use logic for checks :)
 class Game {
 public:
 	Game();
@@ -16,7 +13,6 @@ public:
 	bool Cell(int x, int y);
 	bool UpdateCell(int x, int y);
 	void Update();
-	bool *GetGrid();
 	void DrawGrid(bool *grid);
 	void GameLoop();
 
@@ -25,42 +21,13 @@ private:
 	int width;
 	int height;
 };
-
 #pragma region Game Methods
+// Move Logic to initialisation method
 Game::Game() {
 	width = 20;
 	height = 20;
 	grid = (bool *)malloc(height * width * sizeof(bool));
-
-	for (int i = 0; i < height * width; i++)
-		grid[i] = false;
-
-	cout << "Input your initial living cells in the format `x1,y1 x2,y2 x3,ye ...`\n";
-	string input = "";
-	getline(cin, input);
-
-	string buffer;
-	stringstream ss(input);
-	vector<string> tokens;
-
-	while (ss >> buffer) {
-		tokens.push_back(buffer);
-	}
-	for (int i = 0; i < tokens.size(); i++) {
-		string str = tokens[i];
-		for (int j = 0; j < str.length(); j++) {
-			if (str[j] == ',')
-			{
-				str[j] = ' ';
-			}
-		}
-		vector<int> array;
-		stringstream s(str);
-		int temp;
-		while (s >> temp)
-			array.push_back(temp);
-		grid[array[1] * width + array[0]] = true;
-	}
+	for (int i = 0; i < height * width; i++) grid[i] = false;
 }
 
 Game::~Game() {
@@ -73,50 +40,20 @@ bool Game::Cell(int x, int y) {
 }
 
 bool Game::UpdateCell(int x, int y) {
-	int surroundingAlive = 0;
-
-	// Top left
-	if (Cell(x - 1, y - 1))
-		surroundingAlive++;
-
-	// Top mid
-	if (Cell(x, y - 1))
-		surroundingAlive++;
-
-	// Top right
-	if (Cell(x + 1, y - 1))
-		surroundingAlive++;
-
-	// left
-	if (Cell(x - 1, y))
-		surroundingAlive++;
-
-	// right
-	if (Cell(x + 1, y))
-		surroundingAlive++;
-
-	// bot left
-	if (Cell(x - 1, y + 1))
-		surroundingAlive++;
-
-	// bot mid
-	if (Cell(x, y + 1))
-		surroundingAlive++;
-
-	// bot right
-	if (Cell(x + 1, y + 1))
-		surroundingAlive++;
+	int surroundingAlive =
+		Cell(x - 1, y - 1) + Cell(x, y - 1) + Cell(x + 1, y - 1) + Cell(x - 1, y)
+		+ Cell(x + 1, y) + Cell(x - 1, y + 1)+ Cell(x, y + 1) + Cell(x + 1, y + 1);
 	
 	return surroundingAlive == 3 || (Cell(x, y) && surroundingAlive == 2);
 }
 
 void Game::Update() {
 	bool *newBoard = (bool *)malloc(height * width * sizeof(bool));
-	for (int i = 0; i < height * width; i++) {
-		int x = i % width;
-		int y = ceil(i / height);
-
-		newBoard[i] = UpdateCell(x, y);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++)
+		{
+			newBoard[y * width + x] = UpdateCell(x, y);
+		}
 	}
 	grid = newBoard;
 	
@@ -124,32 +61,52 @@ void Game::Update() {
 	free(newBoard);
 }
 
+
 void Game::DrawGrid(bool *grid) {
 	system("cls");
-	for (int i = 0; i < height; i++)
-	{
-		string row = "";
-		for (int j = i * height; j < i * height + width; j++)
-		{
+	for (int i = 0; i < height; i++) {
+		for (int j = i * height; j < i * height + width; j++) {
 			if (grid[j])
-				row += "1 ";
+				std::cout << "1 ";
 			else
-				row += "0 ";
+				std::cout << "0 ";
 		}
-		row += "\n";
-		cout << row;
+		std::cout <<  "\n";
 	}
 }
 
-bool *Game::GetGrid() { 
-	return grid;
-}
-
 void Game::GameLoop() {
+
+	std::cout << "Input your initial living cells in the format `x1,y1 x2,y2 x3,ye ...`\n";
+	std::string input = "";
+	std::getline(std::cin, input);
+
+	std::string buffer;
+	std::stringstream ss(input);
+	std::vector<std::string> tokens;
+
+	while (ss >> buffer) {
+		tokens.push_back(buffer);
+	}
+	for (int i = 0; i < tokens.size(); i++) {
+		std::string str = tokens[i];
+		for (int j = 0; j < str.length(); j++) {
+			if (str[j] == ',')
+			{
+				str[j] = ' ';
+			}
+		}
+		std::vector<int> array;
+		std::stringstream s(str);
+		int temp;
+		while (s >> temp)
+			array.push_back(temp);
+		grid[array[1] * width + array[0]] = true;
+	}
+
 	DrawGrid(grid);
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	while (true)
-	{
+	while (true) {
 		Update();
 		DrawGrid(grid);
 		std::this_thread::sleep_for(std::chrono::milliseconds(300));
@@ -158,7 +115,7 @@ void Game::GameLoop() {
 #pragma endregion
 
 int main() {
-	Game g = Game();
+	Game g;
 	g.GameLoop(); // Runs Game
 
     return 0;
