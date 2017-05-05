@@ -9,8 +9,7 @@
 
 using namespace std;
 // TODO replace jagged array with flattened array and use logic for checks :)
-class Game
-{
+class Game {
 public:
 	Game();
 	~Game();
@@ -27,8 +26,7 @@ private:
 };
 
 #pragma region Game Methods
-Game::Game()
-{
+Game::Game() {
 	width = 20;
 	height = 20;
 	grid = (bool *)malloc(height * width * sizeof(bool));
@@ -44,15 +42,12 @@ Game::Game()
 	stringstream ss(input);
 	vector<string> tokens;
 
-	while (ss >> buffer)
-	{
+	while (ss >> buffer) {
 		tokens.push_back(buffer);
 	}
-	for (int i = 0; i < tokens.size(); i++)
-	{
+	for (int i = 0; i < tokens.size(); i++) {
 		string str = tokens[i];
-		for (int j = 0; j < str.length(); j++)
-		{
+		for (int j = 0; j < str.length(); j++) {
 			if (str[j] == ',')
 			{
 				str[j] = ' ';
@@ -67,43 +62,52 @@ Game::Game()
 	}
 }
 
-Game::~Game()
-{
+Game::~Game() {
 	grid = nullptr;
 	free(grid);
 }
 
-bool Game::UpdateCell(int i)
-{
+bool Game::UpdateCell(int i) {
 	int surroundingAlive = 0;
 
 	// Top left
-	if (i % width > 0 && i > width && grid[i - width - 1]) surroundingAlive++;
-	// Top mid
-	if (i > width && grid[i - width]) surroundingAlive++;
-	// Top right
-	if (i > width && i % width < width - 1 && grid[i - width + 1]) surroundingAlive++;
-	// left
-	if (i % width > 0 && grid[i - 1]) surroundingAlive++;
-	// right
-	if (i % width < width - 1 && grid[i + 1]) surroundingAlive++;
-	// bot left
-	if (i % width > 0 && i <= width * (height - 1) && grid[i + width - 1]) surroundingAlive++;
-	// bot mid
-	if (i <= width * (height - 1) && grid[i + width]) surroundingAlive++;
-	// bot right
-	if (i % width < width - 1 && i <= width * (height - 1) && grid[i + width + 1]) surroundingAlive++;
+	if (i % width > 0 && i > width && grid[i - width - 1])
+		surroundingAlive++;
 
-	if (surroundingAlive == 3) return true;
-	if (grid[i] && surroundingAlive == 2) return true;
-	if (surroundingAlive > 3 || surroundingAlive < 2) return false;
+	// Top mid
+	if (i > width && grid[i - width])
+		surroundingAlive++;
+
+	// Top right
+	if (i > width && i % width < width - 1 && grid[i - width + 1])
+		surroundingAlive++;
+
+	// left
+	if (i % width > 0 && grid[i - 1])
+		surroundingAlive++;
+
+	// right
+	if (i % width < width - 1 && grid[i + 1])
+		surroundingAlive++;
+
+	// bot left
+	if (i % width > 0 && i <= width * (height - 1) && grid[i + width - 1])
+		surroundingAlive++;
+
+	// bot mid
+	if (i <= width * (height - 1) && grid[i + width])
+		surroundingAlive++;
+
+	// bot right
+	if (i % width < width - 1 && i <= width * (height - 1) && grid[i + width + 1])
+		surroundingAlive++;
+	
+	return surroundingAlive == 3 || (grid[i] && surroundingAlive == 2);
 }
 
-void Game::Update()
-{
+void Game::Update() {
 	bool *newBoard = (bool *)malloc(height * width * sizeof(bool));
-	for (int i = 0; i < height * width; i++)
-	{
+	for (int i = 0; i < height * width; i++) {
 		newBoard[i] = UpdateCell(i);
 	}
 	grid = newBoard;
@@ -112,8 +116,7 @@ void Game::Update()
 	free(newBoard);
 }
 
-void Game::DrawGrid(bool *grid)
-{
+void Game::DrawGrid(bool *grid) {
 	system("cls");
 	for (int i = 0; i < height; i++)
 	{
@@ -130,13 +133,11 @@ void Game::DrawGrid(bool *grid)
 	}
 }
 
-bool *Game::GetGrid()
-{ 
+bool *Game::GetGrid() { 
 	return grid;
 }
 
-void Game::GameLoop()
-{
+void Game::GameLoop() {
 	DrawGrid(grid);
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	while (true)
@@ -148,8 +149,7 @@ void Game::GameLoop()
 }
 #pragma endregion
 
-int main()
-{
+int main() {
 	Game g = Game();
 	g.GameLoop(); // Runs Game
 
